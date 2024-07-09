@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -40,4 +41,34 @@ Route::prefix('admin')->group(function () {
     Route::get('/users', function () {
         return "USERS";
     });
+});
+
+//Query builder
+Route::get('/posts', function () {
+    //Lấy dữ liệu
+    // $posts = DB::table('posts')->get();
+    //Lấy 10 bản ghi
+    // $posts = DB::table('posts')
+    //     ->select('id', 'title', 'view') //lấy ra cột id, title, view
+    //     ->limit(10)->get();
+
+    //Update data
+    // DB::table('posts')
+    //     ->where('id', '=', 13)
+    //     ->update([
+    //         'title' => 'Dữ liệu được cập nhật'
+    //     ]);
+
+    //Delete data
+    // DB::table('posts')->delete(18);
+    //Lấy ra các bài viết có lượt view > 800
+    // $posts = DB::table('posts')
+    //     ->where('view', '>', 800)
+    //     ->get();
+
+    //Nối 2 bảng posts và categories
+    $posts = DB::table('posts')
+        ->join('categories', 'cate_id', '=', 'categories.id')
+        ->get();
+    return view('post-list', compact('posts'));
 });
