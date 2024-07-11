@@ -7,7 +7,7 @@
     <hr>
     @foreach ($posts as $post)
         <div>
-            <a href="#">
+            <a href="{{ route('post.detail', $post->id) }}">
                 <h3>{{ $post->title }}</h3>
             </a>
             <p>{{ $post->description }}</p>

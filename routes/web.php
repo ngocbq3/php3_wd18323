@@ -72,3 +72,29 @@ Route::get('/posts', function () {
         ->get();
     return view('post-list', compact('posts'));
 });
+
+
+Route::get('/', function () {
+    $posts = DB::table('posts')
+        ->orderBy('view', 'desc')
+        ->limit(8)
+        ->get();
+
+    return view('post-list', compact('posts'));
+});
+
+//Hiển thị bài viết theo danh mục
+Route::get('/category/{id}', function ($id) {
+    $posts = DB::table('posts')
+        ->where('cate_id', '=', $id)
+        ->get();
+    return view('post-list', compact('posts'));
+});
+
+//Chi tiết bài viết
+Route::get('/post/{id}', function ($id) {
+    $post = DB::table('posts')
+        ->where('id', $id)
+        ->first();
+    return $post;
+})->name('post.detail');
