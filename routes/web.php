@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\CategoryController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
@@ -84,12 +85,12 @@ Route::get('/', function () {
 });
 
 //Hiển thị bài viết theo danh mục
-Route::get('/category/{id}', function ($id) {
-    $posts = DB::table('posts')
-        ->where('cate_id', '=', $id)
-        ->get();
-    return view('post-list', compact('posts'));
-});
+// Route::get('/category/{id}', function ($id) {
+//     $posts = DB::table('posts')
+//         ->where('cate_id', '=', $id)
+//         ->get();
+//     return view('post-list', compact('posts'));
+// });
 
 //Chi tiết bài viết
 Route::get('/post/{id}', function ($id) {
@@ -98,3 +99,7 @@ Route::get('/post/{id}', function ($id) {
         ->first();
     return $post;
 })->name('post.detail');
+
+Route::prefix('category')->group(function () {
+    Route::get('/list', [CategoryController::class, 'index'])->name('category.index');
+});
