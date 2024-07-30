@@ -10,6 +10,14 @@
 
 <body>
     <h1>Danh sách bài viết</h1>
+
+    @auth
+        <div>
+            Username: {{ Auth::user()->username }}
+            <a href="{{ route('logout') }}">Logout</a>
+        </div>
+    @endauth
+
     @if (session('message'))
         <div class="alert alert-success ">
             {{ session('message') }}

@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\LoginController;
+use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\CheckTokenMiddleware;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
@@ -106,9 +109,27 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::get('/test', [PostController::class, 'test']);
-Route::get('/post/list', [PostController::class, 'index'])->name('post.index');
-Route::get('/post/create', [PostController::class, 'create'])->name('post.create');
-Route::post('/post/create', [PostController::class, 'store'])->name('post.store');
-Route::get('/post/edit/{post}', [PostController::class, 'edit'])->name('post.edit');
-Route::put('/post/edit/{post}', [PostController::class, 'update'])->name('post.update');
-Route::delete('/post/delete/{post}', [PostController::class, 'destroy'])->name('post.destroy');
+
+//Middleware yêu cầu đăng nhập
+Route::middleware(AdminMiddleware::class)->group(function () {
+    Route::get('/post/list', [PostController::class, 'index'])->name('post.index');
+    Route::get('/post/create', [PostController::class, 'create'])->name('post.create');
+    Route::post('/post/create', [PostController::class, 'store'])->name('post.store');
+    Route::get('/post/edit/{post}', [PostController::class, 'edit'])->name('post.edit');
+    Route::put('/post/edit/{post}', [PostController::class, 'update'])->name('post.update');
+    Route::delete('/post/delete/{post}', [PostController::class, 'destroy'])->name('post.destroy');
+});
+
+Route::get('/', function () {
+    return view('welcome');
+})->middleware('checkToken');
+
+
+//Login, register
+Route::get('/login', [LoginController::class, 'login'])->name('login');
+Route::post('/login', [LoginController::class, 'postLogin'])->name('postLogin');
+
+Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+
+Route::get('/register', [LoginController::class, 'register'])->name('register');
+Route::post('/register', [LoginController::class, 'postRegister'])->name('postRegister');

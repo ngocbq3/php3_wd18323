@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -90,5 +91,39 @@ class PostController extends Controller
     {
         $post->delete();
         return redirect()->route('post.index')->with('message', 'Xóa dữ liệu thành công');
+    }
+
+    //Hiển thị form edit
+    public function edit(Post $post)
+    {
+        $categories = Category::all();
+        return view('admin.posts.edit', compact('categories', 'post'));
+    }
+
+    //Lưu dữ liệu cập nhật vào database
+    public function update(Request $request, Post $post)
+    {
+        $data = $request->except('image');
+
+        $old_image = $post->image;
+        //Nếu không cập nhật ảnh
+        $data['image'] = $old_image;
+        //Nếu cập nhật ảnh
+        if ($request->hasFile('image')) {
+            $path_image = $request->file('image')->store('images');
+            $data['image'] = $path_image;
+        }
+
+        //Lưu vào database
+        $post->update($data);
+
+        //Xóa ảnh cũ
+        if (isset($path_image)) {
+            if (file_exists('storage/' . $old_image)) {
+                unlink('storage/' . $old_image);
+            }
+        }
+
+        return redirect()->back()->with('message', 'Cập nhật dữ liệu thành công');
     }
 }
